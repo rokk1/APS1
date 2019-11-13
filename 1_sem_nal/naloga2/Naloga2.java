@@ -21,55 +21,100 @@ public class Naloga2 {      // OVERHAND SHUFFLE
         String[] karte = zacZaporedje.split(",");
 
         LinkedList cards = new LinkedList();
-        cards.first.next = null;
+        Node iterator = new Node(karte[0]);
+        cards.first = iterator;
+        
 
-        for (int i = 0; i < karte.length; i++) {
-            cards.first.next = new LinkedListElement(karte[i]);
-            cards.first = cards.first.next;
+        for (int i = 1; i < karte.length; i++) {
+            iterator.next = new Node(karte[i]);
+            iterator = iterator.next;
         }
 
 
-        String directions = in.next();
-        String[] navodila = directions.split(",");
+        while (in.hasNext()) {
+            String directions = in.next();
+            String[] navodila = directions.split(",");
 
-        printList(cards);
+            /*
+                navodila = [
+                    2E,       karta, ki razdeli kup
+                    1A,       mesto vstavljanja v kup 1
+                    3         stevilo kart, ki se vstavijo v 1 iteraciji postopka
+                ]
+            */
+
+            LinkedList kup1 = new LinkedList();
+            Node firstKup1 = new Node();
+            firstKup1 = kup1.first;
+            LinkedList kup2 = new LinkedList();
+            Node firstKup2 = new Node();
+            firstKup2 = kup2.first;
+
+            Node current = cards.first;
+            //System.out.println(current.card);
+            while (current != null && !current.card.equals(navodila[0])) {
+                
+            }
+
+            if (current != null) {
+                Node a = new Node(current.card);
+                kup1.first = a;
+            }
+
+            kup2.first = current.next;
+            
+
+        
+            System.out.println("KUP 1");
+            printList(kup1);
+            System.out.println("KUP 2");
+            printList(kup2);
+        }
 
 
     }
 
+    // l.first = null, WHY??
     public static void printList(LinkedList l) {
-        LinkedListElement first = l.first;
-        while (first.next != null) {
-            System.out.printf("%s - ", first.card);
-            first = first.next;
+        Node iterator = l.first;
+        while (iterator != null) {
+            System.out.printf("%s - ", iterator.card);
+            iterator = iterator.next;
         }
+        System.out.println();
     }
 }
 
 class LinkedList {
 
-    LinkedListElement first;
+    Node first;
 
     public LinkedList() {
-        first = null;
+        this.first = null;
     }
 
-    public LinkedList(LinkedListElement prvi) {
-        first = prvi;
+    public LinkedList(Node prvi) {
+        this.first = prvi;
+    }
+
+    public LinkedList(Node prvi, String karta) {
+        this.first = prvi;
+        this.first.card = karta;
+        this.first.next = null;
     }
 }
 
-class LinkedListElement {
+class Node {
     String card;
-    LinkedListElement next;
+    Node next;
 
-    public LinkedListElement(String karta) {
-        card = karta;
-        next = null;
+    Node(String karta) {
+        this.card = karta;
+        this.next = null;
     }
 
-    public LinkedListElement(String karta, LinkedListElement next1) {
-        card = karta;
-        next = next1;
+    Node() {
+        this.card = null;
+        this.next = null;
     }
 }
