@@ -20,68 +20,93 @@ public class Naloga2 {      // OVERHAND SHUFFLE
         String zacZaporedje = in.next();
         String[] karte = zacZaporedje.split(",");
 
-        LinkedList cards = new LinkedList();
-        Node iterator = new Node(karte[0]);
-        cards.first = iterator;
-        
+        LinkedList kup = new LinkedList();
 
-        for (int i = 1; i < karte.length; i++) {
-            iterator.next = new Node(karte[i]);
-            iterator = iterator.next;
-        }
+        kup.init(karte);
+        printList(kup);
 
-        printList(cards);
 
-        while (in.hasNext()) {
-            String directions = in.next();
-            String[] navodila = directions.split(",");
+        for (int i = 0; i < stMesanj; i++) {
+            String[] navodilo = in.next().split(",");
 
             /*
-                navodila = [
-                    2E,       karta, ki razdeli kup
-                    1A,       mesto vstavljanja v kup 1
-                    3         stevilo kart, ki se vstavijo v 1 iteraciji postopka
-                ]
+                1. korak: navodilo[0] = karta, ki kup razdeli na [...., navodilo[0]] in [... ostalo ...]
             */
 
             LinkedList kup1 = new LinkedList();
-            Node kup1First = kup1.first;
+            Node prviKup1 = new Node(null);
+            prviKup1 = kup1.first;
+            
             LinkedList kup2 = new LinkedList();
-            Node kup2First = kup2.first;
-            Node it = cards.first;
+            Node prviKup2 = kup2.first;
 
-            while (iterator != null && !it.card.equals(navodila[0])) {
-                kup1First = new Node(it.card);
-                System.out.println(kup1First.card);
-                kup1First = kup1First.next;
-                it = it.next;
+
+            Node iterator = kup.first.next;
+            while (iterator != null && !iterator.card.equals(navodilo[0])) {
+                //System.out.println(iterator.card);
+                kup1.add(iterator.card);
+                iterator = iterator.next;
             }
 
-            printList(kup1);
+            if (iterator != null) {
+                kup1.add(iterator.card);
+                iterator = iterator.next;
+            }
 
+            while (iterator != null) {
+                kup2.add(iterator.card);
+                iterator = iterator.next;
+            }
         }
+
     }
 
     public static void printList(LinkedList l) {
-        Node iterator = l.first;
+        Node iterator = l.first.next;
         while (iterator != null) {
-            System.out.printf("%s - ", iterator.card);
+            System.out.printf("%s", iterator.card);
             iterator = iterator.next;
+            if (iterator != null) {
+                System.out.printf(" "); 
+            }
         }
         System.out.println();
     }
 }
 
 class LinkedList {
-
-    Node first;
+    protected Node first;
 
     public LinkedList() {
-        this.first = null;
+        first = null;
     }
 
-    public LinkedList(Node prvi) {
-        this.first = prvi;
+
+    public void init(String[] a) {
+        LinkedList list = new LinkedList();
+
+        first = new Node();
+        Node element = new Node(a[0], null);
+
+        first.next = element;
+
+        for (int i = 1; i < a.length; i++) {
+            Node el = new Node(a[i], null);
+
+            element.next = el;
+            element = el;
+        }
+    }
+
+    public void add(String card) {
+        Node dodaj = new Node(card);
+        
+        Node it = first.next;
+        while (it != null) {
+            it = it.next;
+        }
+        it = dodaj;
+
     }
 }
 
@@ -89,18 +114,16 @@ class Node {
     String card;
     Node next;
 
-    Node(String karta) {
-        this.card = karta;
-        this.next = null;
+    public Node(String v) {
+        card = v;
     }
 
-    Node(String karta, Node next) {
-        this.card = karta;
-        this.next = next;
+    public Node(String v, Node nxt) {
+        card = v;
+        next = nxt;
     }
 
-    Node() {
-        this.card = null;
-        this.next = null;
+    public Node() {
+        next = null;
     }
 }

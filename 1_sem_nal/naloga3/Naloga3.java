@@ -1,14 +1,16 @@
-import java.util.Scanner;
-import java.io.File;
+import java.util.*;
+import java.io.*;
 import java.io.FileNotFoundException;
 
 public class Naloga3 {
 
-
+    public static PrintWriter izhod;
     public static Scanner in;
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
 
         File file = new File(args[0]);
+
+        izhod = new PrintWriter(new FileWriter(args[1]));
 
         in = new Scanner(file);
 
@@ -17,37 +19,54 @@ public class Naloga3 {
         String[] st = stevilke.split(",");
 
         int stOperacij = in.nextInt();
-        for (int i = 0; i < stOperacij; i++) {
-            String[] ukaz = in.next().split(",");
-
-            switch(ukaz[0]) {
-                case 'p':
-                    seznam.preslikaj()
-            }
-        }
+        
         // Kreiranje praznega seznama
         LinkedList seznam = new LinkedList();
 
 
         seznam.init(st);
-        printList(seznam);
-        seznam.ohrani('=', 10);
-        printList(seznam);
-        seznam.zdruzi('+');
-        printList(seznam);
+        //printList(seznam);
+        //seznam.ohrani('=', 10);
+        //printList(seznam);
+        //seznam.zdruzi('+');
+        //printList(seznam);
 
-        
+        for (int i = 0; i < stOperacij; i++) {
+            String[] ukaz = in.next().split(",");
 
+            switch(ukaz[0].charAt(0)) {
+                case 'p':
+                    seznam.preslikaj(ukaz[1].charAt(0), Integer.parseInt(ukaz[2]));
+                    printList(seznam);
+                break;
+                case 'o':
+                    seznam.ohrani(ukaz[1].charAt(0), Integer.parseInt(ukaz[2]));
+                    printList(seznam);
+                break;
+                default:
+                    seznam.zdruzi(ukaz[1].charAt(0));
+                    printList(seznam);
+                break;
+            }
+        }
 
-        
+        in.close();
+        izhod.close();
     }
+
 
     public static void printList(LinkedList l) {
         Node iterator = l.first.next;
         while (iterator != null) {
-            System.out.printf("%s - ", iterator.value);
+            System.out.printf("%s", iterator.value);
+            izhod.printf("%s", iterator.value);
             iterator = iterator.next;
+            if (iterator != null) {
+                System.out.printf(",");
+                izhod.printf(",");
+            }
         }
+        izhod.println();
         System.out.println();
     }
 }
@@ -59,18 +78,8 @@ class LinkedList {
         first = null;
     }
 
-    public void printi() {
-        Node prvi = first;
-        while (prvi.next != null) {
-            System.out.printf("%d - ", prvi.next.value);
-            prvi = prvi.next;
-        }
-        System.out.println();
-    }
-
     public void preslikaj(char op, int val) {
         Node it = first.next;
-        System.out.printf("%c\n", op);
         if (op == '*') {
             // Vsak element seznama pomnozi z val
             while (it != null) {
