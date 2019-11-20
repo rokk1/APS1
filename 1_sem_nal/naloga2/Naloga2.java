@@ -1,18 +1,19 @@
-import java.util.Scanner;
-import java.io.File;
+import java.util.*;
+import java.io.*;
 import java.io.FileNotFoundException;
 
 public class Naloga2 {      // OVERHAND SHUFFLE
 
     public static Scanner in;
-
     public static LinkedList kup1;
     public static LinkedList kup2;
+    public static PrintWriter izhod;
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         
         File file = new File(args[0]);
 
+        izhod = new PrintWriter(new FileWriter(args[1]));
         in = new Scanner(file);
 
         String stevilke = in.next();
@@ -92,14 +93,13 @@ public class Naloga2 {      // OVERHAND SHUFFLE
             }
             kup = kup1;
         }
+        in.close();
+        printList(kup1);
+        izhod.close();
     }
 
     public static void insert(int count, String nav) {
-        System.out.println("count: " + count);
-        printList(kup1);
-        printList(kup2);
         // Find nav in kup1
-        boolean found = false;
         Node it1 = kup1.first;
         while (it1.next != null && !it1.next.card.equals(nav)) {
             it1 = it1.next;
@@ -109,8 +109,8 @@ public class Naloga2 {      // OVERHAND SHUFFLE
             it1 = it1.next;
         }
         if (it1.next == null) {
-            // Nismo nasli karte
-            System.out.println("TUKAJ");
+            // Nismo nasli karte, vstavi na zacetek kup1!
+            it1 = kup1.first;
         }
         Node temp = it1.next;
         Node it2 = kup2.first;
@@ -128,11 +128,14 @@ public class Naloga2 {      // OVERHAND SHUFFLE
         Node iterator = l.first.next;
         while (iterator != null) {
             System.out.printf("%s", iterator.card);
+            izhod.printf("%s", iterator.card);
             iterator = iterator.next;
             if (iterator != null) {
-                System.out.printf(" "); 
+                System.out.printf(",");
+                izhod.printf(",");
             }
         }
+        izhod.println();
         System.out.println();
     }
 }
