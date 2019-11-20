@@ -39,20 +39,34 @@ public class Naloga1 {
         }
 
 
-        // BEGIN
-        int start_i = -1;
-        int start_j = -1;
-        int end_i = -1;
-        int end_j = -1;
-        print(arr);
-        
+       print(arr);
+       
         for (int i = 0; i < besede.length; i++) {
-            // FIND EVERY WORD INTO PUZZLE
+
+            String word = besede[i];
+
+            int ix = -1;
+            int iy = -1;
+            char startChar = word.charAt(0);
+            for (int k = 0; k < arr.length; k++) {
+                for (int z = 0; z < arr[0].length; z++) {
+                    if (arr[k][z] == startChar) {
+                        ix = k;
+                        iy = z;
+                        for (int w = 1; w < word.length(); w++) {
+                            char ch = word.charAt(w);
+                            boolean najdi = findNear(ch, ix, iy, arr);
+                        }
+                    }
+                }
+            }
+            System.out.printf("Start x: %d\nStart y: %d\n", ix, iy);
         }
+
 
     }
 
-    public static void find() {
+    public static boolean findNear(char character, int i, int j, char[][] arr) {
         
     }
 

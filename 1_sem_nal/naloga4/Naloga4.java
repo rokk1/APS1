@@ -26,23 +26,41 @@ public class Naloga4 {
 }
 
 class Bag {
-    LinkedList elements;
+    protected Node first;
 
     public Bag() {
-        LinkedList elements = 
+        first = null;
+    }
+
+    
+
+    public void ustvari(String[] a) {
+        Bag list = new LinkedList();
+
+        first = new Node(null);
+        Node element = new Node(Integer.parseInt(a[0]), null);
+
+        first.next = element;
+
+        for (int i = 1; i < a.length; i++) {
+            Node el = new Node(Integer.parseInt(a[i]), null);
+
+            element.next = el;
+            element = el;
+        }
     }
 }
 
-class LinkedList {
-    LinkedListNode first;
-    LinkedListN
-}
-
-class LinkedListNode {
+class Node {
     int value;
-    LinkedListNode next;
+    Node next;
 
-    public LinkedListNode() {
-        
+    public Node(int v, Node nxt) {
+        value = v;
+        next = nxt;
+    }
+
+    public Node(Node nxt) {
+        next = nxt;
     }
 }

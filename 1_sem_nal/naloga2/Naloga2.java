@@ -6,6 +6,9 @@ public class Naloga2 {      // OVERHAND SHUFFLE
 
     public static Scanner in;
 
+    public static LinkedList kup1;
+    public static LinkedList kup2;
+
     public static void main(String[] args) throws FileNotFoundException {
         
         File file = new File(args[0]);
@@ -23,7 +26,6 @@ public class Naloga2 {      // OVERHAND SHUFFLE
         LinkedList kup = new LinkedList();
 
         kup.init(karte);
-        printList(kup);
 
 
         for (int i = 0; i < stMesanj; i++) {
@@ -33,32 +35,93 @@ public class Naloga2 {      // OVERHAND SHUFFLE
                 1. korak: navodilo[0] = karta, ki kup razdeli na [...., navodilo[0]] in [... ostalo ...]
             */
 
-            LinkedList kup1 = new LinkedList();
-            Node prviKup1 = new Node(null);
-            prviKup1 = kup1.first;
+            kup1 = new LinkedList();
+            kup1.first = new Node();
+            Node it1 = kup1.first;
             
-            LinkedList kup2 = new LinkedList();
-            Node prviKup2 = kup2.first;
 
+            kup2 = new LinkedList();
+            kup2.first = new Node();
+            Node it2 = kup2.first;
 
             Node iterator = kup.first.next;
             while (iterator != null && !iterator.card.equals(navodilo[0])) {
                 //System.out.println(iterator.card);
-                kup1.add(iterator.card);
+                it1.next = new Node(iterator.card, null);
+                it1 = it1.next;
                 iterator = iterator.next;
             }
 
             if (iterator != null) {
-                kup1.add(iterator.card);
+                it1.next = new Node(iterator.card, null);
                 iterator = iterator.next;
             }
 
             while (iterator != null) {
-                kup2.add(iterator.card);
+                it2.next = new Node(iterator.card, null);
+                it2 = it2.next;
                 iterator = iterator.next;
             }
-        }
 
+
+            if (kup2.first.next == null) {
+                // zamenjaj kup1 in kup2
+                kup2 = new LinkedList();
+                kup2.first = new Node();
+                it2 = kup2.first;
+
+                it1 = kup1.first;
+                while (it1.next != null) {
+                    it2.next = new Node(it1.next.card, null);
+                    it1 = it1.next;
+                    it2 = it2.next;
+                }
+
+                kup1 = new LinkedList();
+                kup1.first = new Node();
+            }
+            
+
+            /*
+                2. korak: navodilo[1] = mesto vstavljanja kup2 v kup1
+            */
+            
+
+            while (kup2.first.next != null) {
+                insert(Integer.parseInt(navodilo[2]), navodilo[1]);
+            }
+            kup = kup1;
+        }
+    }
+
+    public static void insert(int count, String nav) {
+        System.out.println("count: " + count);
+        printList(kup1);
+        printList(kup2);
+        // Find nav in kup1
+        boolean found = false;
+        Node it1 = kup1.first;
+        while (it1.next != null && !it1.next.card.equals(nav)) {
+            it1 = it1.next;
+        }
+        
+        if (it1.next != null) {
+            it1 = it1.next;
+        }
+        if (it1.next == null) {
+            // Nismo nasli karte
+            System.out.println("TUKAJ");
+        }
+        Node temp = it1.next;
+        Node it2 = kup2.first;
+        while (it2.next != null && count > 0) {
+            Node novi = new Node(it2.next.card, null);
+            it2.next = it2.next.next;
+            it1.next = novi;
+            it1 = it1.next;
+            count--;
+        }
+        it1.next = temp;
     }
 
     public static void printList(LinkedList l) {
