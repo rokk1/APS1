@@ -13,7 +13,7 @@ public class Naloga2 {      // OVERHAND SHUFFLE
         
         File file = new File(args[0]);
 
-        izhod = new PrintWriter(new FileWriter(args[1]));
+        //izhod = new PrintWriter(new FileWriter(args[1]));
         in = new Scanner(file);
 
         String stevilke = in.next();
@@ -26,8 +26,14 @@ public class Naloga2 {      // OVERHAND SHUFFLE
 
         LinkedList kup = new LinkedList();
 
-        kup.init(karte);
-
+        kup.init();
+        Node iter = kup.first;
+        for (int i = 0; i < karte.length; i++) {
+            iter.next = new Node(karte[i]);
+            iter = iter.next;
+        }
+        System.out.println("ZACETNI KUP");
+        printList(kup);
 
         for (int i = 0; i < stMesanj; i++) {
             String[] navodilo = in.next().split(",");
@@ -37,65 +43,51 @@ public class Naloga2 {      // OVERHAND SHUFFLE
             */
 
             kup1 = new LinkedList();
-            kup1.first = new Node();
+            kup1.init();
             Node it1 = kup1.first;
-            
 
             kup2 = new LinkedList();
-            kup2.first = new Node();
+            kup2.init();
             Node it2 = kup2.first;
 
-            Node iterator = kup.first.next;
-            while (iterator != null && !iterator.card.equals(navodilo[0])) {
-                //System.out.println(iterator.card);
-                it1.next = new Node(iterator.card, null);
-                it1 = it1.next;
-                iterator = iterator.next;
-            }
-
-            if (iterator != null) {
-                it1.next = new Node(iterator.card, null);
-                iterator = iterator.next;
-            }
-
-            while (iterator != null) {
-                it2.next = new Node(iterator.card, null);
-                it2 = it2.next;
-                iterator = iterator.next;
-            }
-
-
-            if (kup2.first.next == null) {
-                // zamenjaj kup1 in kup2
-                kup2 = new LinkedList();
-                kup2.first = new Node();
-                it2 = kup2.first;
-
-                it1 = kup1.first;
-                while (it1.next != null) {
-                    it2.next = new Node(it1.next.card, null);
+            Node iterator = kup.first;
+            if (kup.inKup1(navodilo[0])) {
+                // Karta navodilo[0] je v kupu -> razdeli kup na kup1 in kup2
+                System.out.printf("Split at: %s\n", navodilo[0]);
+                while (iterator.next != null && !iterator.next.card.equals(navodilo[0])) {
+                    it1.next = new Node(iterator.next.card);
                     it1 = it1.next;
+                    iterator = iterator.next;
+                }
+                it1.next = new Node(iterator.next.card);
+                iterator = iterator.next;
+                while (iterator.next != null) {
+                    it2.next = new Node(iterator.next.card);
                     it2 = it2.next;
+                    iterator = iterator.next;
                 }
 
-                kup1 = new LinkedList();
-                kup1.first = new Node();
+            } else {
+                // Karte navodilo[0] ni v kupu, zato je kup2 = kup, kup1 pa ostane prazen
+                kup2 = kup;
             }
+            System.out.println("KUP 1");
+            printList(kup1);
+            System.out.println("KUP 2");
+            printList(kup2);
             
 
             /*
                 2. korak: navodilo[1] = mesto vstavljanja kup2 v kup1
             */
+            int stVstavljanj = Integer.parseInt(navodilo[2]);
+            
             
 
-            while (kup2.first.next != null) {
-                insert(Integer.parseInt(navodilo[2]), navodilo[1]);
-            }
-            kup = kup1;
         }
-        in.close();
+        //in.close();
         printList(kup1);
-        izhod.close();
+        //izhod.close();
     }
 
     public static void insert(int count, String nav) {
@@ -128,14 +120,14 @@ public class Naloga2 {      // OVERHAND SHUFFLE
         Node iterator = l.first.next;
         while (iterator != null) {
             System.out.printf("%s", iterator.card);
-            izhod.printf("%s", iterator.card);
+            //izhod.printf("%s", iterator.card);
             iterator = iterator.next;
             if (iterator != null) {
                 System.out.printf(",");
-                izhod.printf(",");
+                //izhod.printf(",");
             }
         }
-        izhod.println();
+        //izhod.println();
         System.out.println();
     }
 }
@@ -148,20 +140,10 @@ class LinkedList {
     }
 
 
-    public void init(String[] a) {
+    public void init() {
         LinkedList list = new LinkedList();
 
         first = new Node();
-        Node element = new Node(a[0], null);
-
-        first.next = element;
-
-        for (int i = 1; i < a.length; i++) {
-            Node el = new Node(a[i], null);
-
-            element.next = el;
-            element = el;
-        }
     }
 
     public void add(String card) {
@@ -173,6 +155,17 @@ class LinkedList {
         }
         it = dodaj;
 
+    }
+
+    public boolean inKup1(String value) {
+        Node it = first;
+        while (it.next != null) {
+            if (it.next.card.equals(value)) {
+                return true;
+            }
+            it = it.next;
+        }
+        return false;
     }
 }
 
