@@ -40,34 +40,41 @@ public class Naloga1 {
 
 
        print(arr);
-       
+        zunanja_zanka:
         for (int i = 0; i < besede.length; i++) {
 
             String word = besede[i];
-
-            int ix = -1;
-            int iy = -1;
-            char startChar = word.charAt(0);
             for (int k = 0; k < arr.length; k++) {
-                for (int z = 0; z < arr[0].length; z++) {
-                    if (arr[k][z] == startChar) {
-                        ix = k;
-                        iy = z;
-                        for (int w = 1; w < word.length(); w++) {
-                            char ch = word.charAt(w);
-                            boolean najdi = findNear(ch, ix, iy, arr);
-                        }
+                for (int j = 0; j < arr[k].length; j++) {
+                    if (findWord(besede[i], arr, 0, 0)) {
+                        break zunanja_zanka;
                     }
                 }
             }
-            System.out.printf("Start x: %d\nStart y: %d\n", ix, iy);
         }
 
 
     }
 
-    public static boolean findNear(char character, int i, int j, char[][] arr) {
+    public static boolean findWord(String beseda, char[][] arr, int vrstica, int stolpec) {
+        // Preveri trenutno pozicijo v arr[vrstica][stolpec], ce tam ni prve crke besede, potem vrni false
+        if (arr[vrstica][stolpec] != beseda.charAt(0)) {
+            return false;
+        }
+        int start_v = vrstica;
+        int start_s = stolpec;
         
+        // Isci po vseh smereh
+        for (int smer = 0; smer < 8; smer++) {
+            for (int k = 1; k < beseda.length(); k++) {
+                // Preveri ce smo se v mejah krizanke
+                if (vrstica + k >= arr.length || vrstica - k < 0 || stolpec + k >= arr[i].length || stolpec - k < 0) {
+                    return false;
+                }
+                // Preveri ce je v
+            }
+        }
+
     }
 
     public static void print(char[][] a) {
