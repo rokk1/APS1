@@ -13,7 +13,7 @@ public class Naloga2 {      // OVERHAND SHUFFLE
         
         File file = new File(args[0]);
 
-        //izhod = new PrintWriter(new FileWriter(args[1]));
+        izhod = new PrintWriter(new FileWriter(args[1]));
         in = new Scanner(file);
 
         String stevilke = in.next();
@@ -32,11 +32,10 @@ public class Naloga2 {      // OVERHAND SHUFFLE
             iter.next = new Node(karte[i]);
             iter = iter.next;
         }
-        System.out.println("ZACETNI KUP");
-        printList(kup);
 
         for (int i = 0; i < stMesanj; i++) {
-            String[] navodilo = in.next().split(",");
+            String in_next = in.next();
+            String[] navodilo = in_next.split(",");
 
             /*
                 1. korak: navodilo[0] = karta, ki kup razdeli na [...., navodilo[0]] in [... ostalo ...]
@@ -53,7 +52,6 @@ public class Naloga2 {      // OVERHAND SHUFFLE
             Node iterator = kup.first;
             if (kup.inKup1(navodilo[0])) {
                 // Karta navodilo[0] je v kupu -> razdeli kup na kup1 in kup2
-                System.out.printf("Split at: %s\n", navodilo[0]);
                 while (iterator.next != null && !iterator.next.card.equals(navodilo[0])) {
                     it1.next = new Node(iterator.next.card);
                     it1 = it1.next;
@@ -71,23 +69,36 @@ public class Naloga2 {      // OVERHAND SHUFFLE
                 // Karte navodilo[0] ni v kupu, zato je kup2 = kup, kup1 pa ostane prazen
                 kup2 = kup;
             }
-            System.out.println("KUP 1");
-            printList(kup1);
-            System.out.println("KUP 2");
-            printList(kup2);
             
 
             /*
                 2. korak: navodilo[1] = mesto vstavljanja kup2 v kup1
             */
             int stVstavljanj = Integer.parseInt(navodilo[2]);
-            
-            
+            //System.out.println("St vstavljanj: " + stVstavljanj);
 
+            while (kup2.first.next != null) {
+                int vstavljenih = 0;
+                Node it_2 = kup2.first;
+                Node za = kup1.vrniNode(navodilo[1]);
+                Node temp = za.next;
+                while (vstavljenih < stVstavljanj && it_2.next != null) {
+                    // Prestavi jih navodilo[2] ali pa toliko da se izprazne kup2
+                    za.next = new Node(it_2.next.card);
+                    vstavljenih++;
+                    za = za.next;
+                    it_2.next = it_2.next.next;
+                }
+                za.next = temp;
+            }
+
+            kup = kup1;
+
+            
         }
-        //in.close();
-        printList(kup1);
-        //izhod.close();
+        in.close();
+        printList(kup);
+        izhod.close();
     }
 
     public static void insert(int count, String nav) {
@@ -119,16 +130,17 @@ public class Naloga2 {      // OVERHAND SHUFFLE
     public static void printList(LinkedList l) {
         Node iterator = l.first.next;
         while (iterator != null) {
-            System.out.printf("%s", iterator.card);
-            //izhod.printf("%s", iterator.card);
+            //System.out.printf("%s", iterator.card);
+            
+            izhod.printf("%s", iterator.card);
             iterator = iterator.next;
             if (iterator != null) {
-                System.out.printf(",");
-                //izhod.printf(",");
+                //System.out.printf(",");
+                izhod.printf(",");
             }
         }
-        //izhod.println();
-        System.out.println();
+        izhod.println();
+        //System.out.println();
     }
 }
 
@@ -166,6 +178,30 @@ class LinkedList {
             it = it.next;
         }
         return false;
+    }
+
+    public Node vrniNode(String val) {
+        Node it = first;
+        while (it.next != null && !it.next.card.equals(val)) {
+            it = it.next;
+        }
+        if (it.next == null) {
+            return first;
+        }
+        if (it.next.card.equals(val)) {
+            // Nasli smo pravo karto -> ta je zadnja v seznamu
+            return it.next;
+        } else {
+            return first;
+        }
+    }
+
+    public void removeNode(String val) {
+        Node it = first;
+        while (it.next != null && !it.next.card.equals(val)) {
+            it = it.next;
+        }
+        it.next = it.next.next;
     }
 }
 
