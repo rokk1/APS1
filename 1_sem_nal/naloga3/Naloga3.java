@@ -58,16 +58,16 @@ public class Naloga3 {
     public static void printList(LinkedList l) {
         Node iterator = l.first.next;
         while (iterator != null) {
-            System.out.printf("%s", iterator.value);
+            //System.out.printf("%s", iterator.value);
             izhod.printf("%s", iterator.value);
             iterator = iterator.next;
             if (iterator != null) {
-                System.out.printf(",");
+                //System.out.printf(",");
                 izhod.printf(",");
             }
         }
         izhod.println();
-        System.out.println();
+        //System.out.println();
     }
 }
 

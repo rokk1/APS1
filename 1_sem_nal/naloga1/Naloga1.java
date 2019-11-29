@@ -21,6 +21,7 @@ public class Naloga1 {
         int stStolpcev = Integer.parseInt(a[1]);
 
         char[][] arr = new char[stVrstic][stStolpcev];
+        int[][] visited = new int[stVrstic][stStolpcev];
 
         for (int i = 0; i < stVrstic; i++) {
             String line = in.next();
@@ -39,42 +40,82 @@ public class Naloga1 {
         }
 
 
-       print(arr);
-        zunanja_zanka:
+        print(arr);
+        for (int i = 0; i < besede.length; i++) {
+            System.out.println(besede[i]);
+        }
         for (int i = 0; i < besede.length; i++) {
 
             String word = besede[i];
+            zunanja_zanka:
             for (int k = 0; k < arr.length; k++) {
                 for (int j = 0; j < arr[k].length; j++) {
-                    if (findWord(besede[i], arr, 0, 0)) {
+                    if (findWord(besede[i], arr, k, j, visited)) {
                         break zunanja_zanka;
+                    } else {
+
                     }
                 }
             }
         }
-
-
+        int najdenih = 0;
+        int start_i = 0;
+        int start_j = 0;
+        while (najdenih < stBesed) {
+            
+        }
     }
 
-    public static boolean findWord(String beseda, char[][] arr, int vrstica, int stolpec) {
+    public static boolean findWord(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
         // Preveri trenutno pozicijo v arr[vrstica][stolpec], ce tam ni prve crke besede, potem vrni false
-        if (arr[vrstica][stolpec] != beseda.charAt(0)) {
+        if (arr[vrstica][stolpec] != beseda.charAt(0) || zasedeno[vrstica][stolpec] == 1) {
             return false;
         }
         int start_v = vrstica;
         int start_s = stolpec;
         
-        // Isci po vseh smereh
-        for (int smer = 0; smer < 8; smer++) {
-            for (int k = 1; k < beseda.length(); k++) {
-                // Preveri ce smo se v mejah krizanke
-                if (vrstica + k >= arr.length || vrstica - k < 0 || stolpec + k >= arr[i].length || stolpec - k < 0) {
-                    return false;
-                }
-                // Preveri ce je v
-            }
+        zasedeno[vrstica][stolpec] = 1;
+        
+        if (findHorizontal(beseda, arr, start_v, start_s, zasedeno)) {
+            System.out.println("Najdeno horizontalno!");
+            System.out.printf("Beseda: %s, start_v: %d, start_s: %d\n", beseda, start_v, start_s);
+            print2(zasedeno);
+            return true;
+        }
+        if (findHorizontalNeg(beseda, arr, start_v, start_s, zasedeno)) {
+            System.out.println("Najdeno horizontalno v neg. smer!");
+            System.out.printf("Beseda: %s, start_v: %d, start_s: %d\n", beseda, start_v, start_s);
+            print2(zasedeno);
+            return true;
+        }
+        if (findVertical(beseda, arr, start_v, start_s, zasedeno)) {
+            System.out.println("Najdeno vertikalno!");
+            System.out.printf("Beseda: %s, start_v: %d, start_s: %d\n", beseda, start_v, start_s);
+            print2(zasedeno);
+            return true;
+        }
+        if (findVerticalNeg(beseda, arr, start_v, start_s, zasedeno)) {
+            System.out.println("Najdeno vertikalno v neg. smer!");
+            System.out.printf("Beseda: %s, start_v: %d, start_s: %d\n", beseda, start_v, start_s);
+            print2(zasedeno);
+            return true;
+        }
+        if (findDiagonal(beseda, arr, start_v, start_s, zasedeno)) {
+            System.out.println("Najdeno diagonalno!");
+            System.out.printf("Beseda: %s, start_v: %d, start_s: %d\n", beseda, start_v, start_s);
+            print2(zasedeno);
+            return true;
+        }
+        if (findDiagonalNeg(beseda, arr, start_v, start_s, zasedeno)) {
+            System.out.println("Najdeno diagonalno v neg. smer!");
+            System.out.printf("Beseda: %s, start_v: %d, start_s: %d\n", beseda, start_v, start_s);
+            print2(zasedeno);
+            return true;
         }
 
+
+        zasedeno[vrstica][stolpec] = 0;
+        return false;
     }
 
     public static void print(char[][] a) {
@@ -84,5 +125,128 @@ public class Naloga1 {
             }
             System.out.println();
         }
+    }
+
+    public static void print2(int[][] a) {
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[0].length; j++) {
+                System.out.printf("%d ", a[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public static boolean findHorizontal(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+        if (stolpec + beseda.length() > arr.length) {
+            return false;
+        }
+        for (int i = 1; i < beseda.length(); i++) {
+            if (zasedeno[vrstica][stolpec + i] == 1) {
+                return false;
+            } else {
+                if (arr[vrstica][stolpec + i] == beseda.charAt(i)) {
+                    zasedeno[vrstica][stolpec + i] = 1;
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean findVertical(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+        if (vrstica + beseda.length() > arr[0].length) {
+            return false;
+        }
+        for (int i = 1; i < beseda.length(); i++) {
+            if (zasedeno[vrstica + i][stolpec] == 1) {
+                return false;
+            } else {
+                if (arr[vrstica + i][stolpec] == beseda.charAt(i)) {
+                    zasedeno[vrstica + i][stolpec] = 1;
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean findDiagonal(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+        if (vrstica + beseda.length() > arr[0].length || stolpec + beseda.length() > arr.length) {
+            return false;
+        }
+        for (int i = 1; i < beseda.length(); i++) {
+            if (zasedeno[vrstica + i][stolpec + i] == 1) {
+                return false;
+            } else {
+                if (arr[vrstica + i][stolpec + i] == beseda.charAt(i)) {
+                    zasedeno[vrstica + i][stolpec + i] = 1;
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean findDiagonalNeg(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+        if (vrstica - beseda.length() < 0 || stolpec - beseda.length() < 0) {
+            return false;
+        }
+        for (int i = 1; i < beseda.length(); i++) {
+            if (zasedeno[vrstica - i][stolpec - i] == 1) {
+                return false;
+            } else {
+                if (arr[vrstica - i][stolpec - i] == beseda.charAt(i)) {
+                    zasedeno[vrstica - i][stolpec - i] = 1;
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean findVerticalNeg(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+        if (vrstica - beseda.length() < 0) {
+            return false;
+        }
+        for (int i = 1; i < beseda.length(); i++) {
+            if (zasedeno[vrstica - i][stolpec] == 1) {
+                return false;
+            } else {
+                if (arr[vrstica - i][stolpec] == beseda.charAt(i)) {
+                    zasedeno[vrstica - i][stolpec] = 1;
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean findHorizontalNeg(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+        if (stolpec - beseda.length() < 0) {
+            return false;
+        }
+        for (int i = 1; i < beseda.length(); i++) {
+            if (zasedeno[vrstica][stolpec - i] == 1) {
+                return false;
+            } else {
+                if (arr[vrstica][stolpec - i] == beseda.charAt(i)) {
+                    zasedeno[vrstica][stolpec - i] = 1;
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

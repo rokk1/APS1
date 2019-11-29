@@ -77,19 +77,20 @@ public class Naloga2 {      // OVERHAND SHUFFLE
             int stVstavljanj = Integer.parseInt(navodilo[2]);
             //System.out.println("St vstavljanj: " + stVstavljanj);
 
+            Node za = kup1.vrniNode(navodilo[1]);
             while (kup2.first.next != null) {
                 int vstavljenih = 0;
                 Node it_2 = kup2.first;
-                Node za = kup1.vrniNode(navodilo[1]);
+                Node iter_1 = za;
                 Node temp = za.next;
                 while (vstavljenih < stVstavljanj && it_2.next != null) {
                     // Prestavi jih navodilo[2] ali pa toliko da se izprazne kup2
-                    za.next = new Node(it_2.next.card);
+                    iter_1.next = new Node(it_2.next.card);
                     vstavljenih++;
-                    za = za.next;
+                    iter_1 = iter_1.next;
                     it_2.next = it_2.next.next;
                 }
-                za.next = temp;
+                iter_1.next = temp;
             }
 
             kup = kup1;
