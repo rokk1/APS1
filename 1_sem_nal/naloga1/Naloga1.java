@@ -6,6 +6,8 @@ public class Naloga1 {
 
     public static Scanner in;
 
+    public static int[] tmp = new int[2];
+
     public static void main(String[] args) throws FileNotFoundException {
         
         File file = new File(args[0]);
@@ -44,26 +46,26 @@ public class Naloga1 {
         for (int i = 0; i < besede.length; i++) {
             System.out.println(besede[i]);
         }
-        for (int i = 0; i < besede.length; i++) {
 
-            String word = besede[i];
-            zunanja_zanka:
-            for (int k = 0; k < arr.length; k++) {
-                for (int j = 0; j < arr[k].length; j++) {
-                    if (findWord(besede[i], arr, k, j, visited)) {
-                        break zunanja_zanka;
-                    } else {
-
-                    }
-                }
-            }
-        }
+        String[][] rez = new String[stBesed][5];
         int najdenih = 0;
-        int start_i = 0;
-        int start_j = 0;
-        while (najdenih < stBesed) {
-            
+
+        
+
+    for (int i = 0; i < rez.length; i++) {
+        System.out.printf("%s,%s,%s,%s,%s\n", rez[0], rez[1], rez[2], rez[3], rez[4]);
+    }
+
+    public static boolean solve(String[] besede, int zaporednaBeseda, char[][] arr, int[][] visited) {
+        if (zaporednaBeseda >= besede.length) {
+            return true;
         }
+        return solve(besede, zaporednaBeseda++, arr, visited);
+        
+    }
+
+    public static boolean poisciBesedo(String beseda, int indexCrke, char[][] arr, int[][] visited) {
+
     }
 
     public static boolean findWord(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
@@ -136,23 +138,19 @@ public class Naloga1 {
         }
     }
 
-    public static boolean findHorizontal(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+    public static boolean findHorizontal(String beseda, int indexBesede, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
+        if (indexBesede >= beseda.length()) {
+            return true;
+        }
         if (stolpec + beseda.length() > arr.length) {
             return false;
         }
-        for (int i = 1; i < beseda.length(); i++) {
-            if (zasedeno[vrstica][stolpec + i] == 1) {
-                return false;
-            } else {
-                if (arr[vrstica][stolpec + i] == beseda.charAt(i)) {
-                    zasedeno[vrstica][stolpec + i] = 1;
-                    continue;
-                } else {
-                    return false;
-                }
-            }
+        if (arr[vrstica][stolpec] == beseda.charAt(indexBesede)) {
+            zasedeno[vrstica][stolpec] = 1;
+            return findHorizontal(beseda, indexBesede++, arr, vrstica + 1, stolpec, zasedeno)
+        } else {
+            
         }
-        return true;
     }
 
     public static boolean findVertical(String beseda, char[][] arr, int vrstica, int stolpec, int[][] zasedeno) {
